@@ -17,6 +17,16 @@ Spring Boot 3.x、Spring Security 6.x、JWTを使用したトークンベース�
 mvn spring-boot:run
 ```
 
+## 動作確認
+
+アプリケーション起動後、以下のテストスクリプトで動作確認できます：
+
+```bash
+./test-api.sh
+```
+
+または、ブラウザで http://localhost:8080/ にアクセスしてログインしてください。
+
 ## アクセスURL
 
 - ログイン画面: http://localhost:8080/
