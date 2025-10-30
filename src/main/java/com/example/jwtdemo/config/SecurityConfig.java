@@ -47,9 +47,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                // CSRF protection is disabled for JWT-based stateless authentication
+                // JWT tokens are not stored in cookies (except refresh token which is HttpOnly)
+                // and require explicit Authorization header, making CSRF attacks ineffective
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // Public endpoints: web pages (Thymeleaf templates), auth APIs, and static resources
+                        // Note: /dashboard serves public HTML, but the API endpoint /api/dashboard requires authentication
                         .requestMatchers("/", "/dashboard", "/api/auth/**", "/css/**", "/js/**", "/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )

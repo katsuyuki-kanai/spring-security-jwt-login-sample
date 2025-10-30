@@ -45,11 +45,11 @@ public class AuthController {
         try {
             LoginResponse loginResponse = authService.login(loginRequest);
             
-            // Get the user and their refresh token (already created in AuthService)
+            // Get the user to create a refresh token
             User user = userRepository.findByUsername(loginRequest.getUsername())
                     .orElseThrow(() -> new RuntimeException("User not found"));
             
-            // Find the most recent refresh token for this user
+            // Create a new refresh token for this user
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
             
             // Set refresh token as HttpOnly cookie
