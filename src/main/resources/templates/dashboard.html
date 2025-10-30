@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ダッシュボード - JWT認証サンプル</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">JWT認証サンプル</a>
+            <button id="logout-btn" class="btn btn-outline-light">ログアウト</button>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h1 class="card-title mb-4">ダッシュボード</h1>
+                        
+                        <div id="loading" class="text-center">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">読み込み中...</span>
+                            </div>
+                        </div>
+                        
+                        <div id="dashboard-content" class="d-none">
+                            <div class="alert alert-success" role="alert">
+                                <h4 class="alert-heading" id="welcome-message"></h4>
+                            </div>
+                            
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">ユーザー情報</h5>
+                                    <p class="card-text">
+                                        <strong>ユーザー名:</strong> <span id="user-username"></span><br>
+                                        <strong>権限:</strong> <span id="user-role"></span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="error-message" class="alert alert-danger d-none" role="alert"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>
