@@ -16,9 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,13 +45,12 @@ public class AuthController {
         try {
             LoginResponse loginResponse = authService.login(loginRequest);
             
-            // Get refresh token
+            // Get the user and their refresh token (already created in AuthService)
             User user = userRepository.findByUsername(loginRequest.getUsername())
                     .orElseThrow(() -> new RuntimeException("User not found"));
             
-            RefreshToken refreshToken = refreshTokenService.findByToken(
-                    refreshTokenService.createRefreshToken(user.getId()).getToken()
-            ).orElseThrow(() -> new RuntimeException("Failed to create refresh token"));
+            // Find the most recent refresh token for this user
+            RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
             
             // Set refresh token as HttpOnly cookie
             Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken.getToken());
@@ -84,8 +85,16 @@ public class AuthController {
             User user = userRepository.findById(token.getUserId())
                     .orElseThrow(() -> new RuntimeException("User not found"));
             
+            // Load user details properly
+            org.springframework.security.core.userdetails.UserDetails userDetails = 
+                    new org.springframework.security.core.userdetails.User(
+                            user.getUsername(),
+                            user.getPassword(),
+                            Collections.singletonList(new SimpleGrantedAuthority(user.getRole()))
+                    );
+            
             Authentication authentication = new UsernamePasswordAuthenticationToken(
-                    user.getUsername(), null, null
+                    userDetails, null, userDetails.getAuthorities()
             );
             
             String newAccessToken = tokenProvider.generateAccessToken(authentication);
